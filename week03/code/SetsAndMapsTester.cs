@@ -111,6 +111,15 @@ public static class SetsAndMapsTester {
         // To display the pair correctly use something like:
         // Console.WriteLine($"{word} & {pair}");
         // Each pair of words should displayed on its own line.
+            var wordSet = new HashSet<string>(words);
+             foreach (var word in words) {
+            var reversedWord = new string(word.Reverse().ToArray());
+            if (wordSet.Contains(reversedWord) && word != reversedWord) {
+                Console.WriteLine($"{word} & {reversedWord}");
+                wordSet.Remove(word);
+                wordSet.Remove(reversedWord);
+                }
+            }
     }
 
     /// <summary>
@@ -132,6 +141,12 @@ public static class SetsAndMapsTester {
         foreach (var line in File.ReadLines(filename)) {
             var fields = line.Split(",");
             // Todo Problem 2 - ADD YOUR CODE HERE
+            var degree = fields[3]; 
+            if (degrees.ContainsKey(degree)) {
+                degrees[degree]++;
+            } else {
+                degrees[degree] = 1;
+            }
         }
 
         return degrees;
@@ -158,7 +173,28 @@ public static class SetsAndMapsTester {
     /// #############
     private static bool IsAnagram(string word1, string word2) {
         // Todo Problem 3 - ADD YOUR CODE HERE
-        return false;
+        var cleanWord1 = new string(word1.ToLower().Where(char.IsLetter).ToArray());
+        var cleanWord2 = new string(word2.ToLower().Where(char.IsLetter).ToArray());
+    
+        if (cleanWord1.Length != cleanWord2.Length) return false;
+
+        var letterCounts = new Dictionary<char, int>();
+        foreach (var letter in cleanWord1) {
+            if (letterCounts.ContainsKey(letter)) {
+                letterCounts[letter]++;
+            } else {
+                letterCounts[letter] = 1;
+            }
+        }
+
+        foreach (var letter in cleanWord2) {
+            if (!letterCounts.ContainsKey(letter) || letterCounts[letter] == 0) {
+                return false;
+            }
+            letterCounts[letter]--;
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -168,7 +204,7 @@ public static class SetsAndMapsTester {
         Dictionary<ValueTuple<int, int>, bool[]> map = new() {
             { (1, 1), new[] { false, true, false, true } },
             { (1, 2), new[] { false, true, true, false } },
-            { (1, 3), new[] { false, false, false, false } },
+            { (1, 3), new[] { false, false, false, false } }, // wall
             { (1, 4), new[] { false, true, false, true } },
             { (1, 5), new[] { false, false, true, true } },
             { (1, 6), new[] { false, false, true, false } },
@@ -176,20 +212,20 @@ public static class SetsAndMapsTester {
             { (2, 2), new[] { true, false, true, true } },
             { (2, 3), new[] { false, false, true, true } },
             { (2, 4), new[] { true, true, true, false } },
-            { (2, 5), new[] { false, false, false, false } },
-            { (2, 6), new[] { false, false, false, false } },
-            { (3, 1), new[] { false, false, false, false } },
-            { (3, 2), new[] { false, false, false, false } },
-            { (3, 3), new[] { false, false, false, false } },
+            { (2, 5), new[] { false, false, false, false } }, // wall
+            { (2, 6), new[] { false, false, false, false } }, // wall
+            { (3, 1), new[] { false, false, false, false } }, // wall
+            { (3, 2), new[] { false, false, false, false } }, // wall
+            { (3, 3), new[] { false, false, false, false } }, // wall
             { (3, 4), new[] { true, true, false, true } },
             { (3, 5), new[] { false, false, true, true } },
             { (3, 6), new[] { false, false, true, false } },
             { (4, 1), new[] { false, true, false, false } },
-            { (4, 2), new[] { false, false, false, false } },
-            { (4, 3), new[] { false, true, false, true } },
+            { (4, 2), new[] { false, false, false, false } }, // wall
+            { (4, 3), new[] { false, true, false, true } }, 
             { (4, 4), new[] { true, true, true, false } },
-            { (4, 5), new[] { false, false, false, false } },
-            { (4, 6), new[] { false, false, false, false } },
+            { (4, 5), new[] { false, false, false, false } }, // wall
+            { (4, 6), new[] { false, false, false, false } }, // wall
             { (5, 1), new[] { true, true, false, true } },
             { (5, 2), new[] { false, false, true, true } },
             { (5, 3), new[] { true, true, true, true } },
@@ -197,10 +233,10 @@ public static class SetsAndMapsTester {
             { (5, 5), new[] { false, false, true, true } },
             { (5, 6), new[] { false, true, true, false } },
             { (6, 1), new[] { true, false, false, false } },
-            { (6, 2), new[] { false, false, false, false } },
+            { (6, 2), new[] { false, false, false, false } }, // wall
             { (6, 3), new[] { true, false, false, false } },
-            { (6, 4), new[] { false, false, false, false } },
-            { (6, 5), new[] { false, false, false, false } },
+            { (6, 4), new[] { false, false, false, false } }, // wall
+            { (6, 5), new[] { false, false, false, false } }, // wall
             { (6, 6), new[] { true, false, false, false } }
         };
         return map;
